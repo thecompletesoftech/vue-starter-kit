@@ -28,6 +28,10 @@ const footerNavItems: NavItem[] = [
         icon: BookOpen,
     },
 ];
+
+// const props = withDefaults(defineProps<SidebarProps>(), {
+//   collapsible: 'icon',
+// })
 </script>
 
 <template>
