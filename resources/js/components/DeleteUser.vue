@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3';
+import { Form } from '@inertiajs/vue3';
 
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Button } from '@/components/ui/button';
@@ -13,23 +13,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-
-const form = useForm({});
-
-const deleteUser = (e: Event) => {
-    e.preventDefault();
-
-    form.delete(route('profile.destroy'), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onFinish: () => form.reset(),
-    });
-};
-
-const closeModal = () => {
-    form.clearErrors();
-    form.reset();
-};
 </script>
 
 <template>
@@ -45,7 +28,17 @@ const closeModal = () => {
                     <Button variant="destructive">Delete account</Button>
                 </DialogTrigger>
                 <DialogContent>
-                    <form class="space-y-6" @submit="deleteUser">
+                    <Form
+                        method="delete"
+                        :action="route('profile.destroy')"
+                        reset-on-success
+                        @error="() => passwordInput?.focus()"
+                        :options="{
+                            preserveScroll: true,
+                        }"
+                        class="space-y-6"
+                        v-slot="{ errors, processing, reset, clearErrors }"
+                    >
                         <DialogHeader class="space-y-3">
                             <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
                             <DialogDescription>
@@ -56,12 +49,22 @@ const closeModal = () => {
 
                         <DialogFooter class="gap-2">
                             <DialogClose as-child>
-                                <Button variant="secondary" @click="closeModal"> Cancel </Button>
+                                <Button
+                                    variant="secondary"
+                                    @click="
+                                        () => {
+                                            clearErrors();
+                                            reset();
+                                        }
+                                    "
+                                >
+                                    Cancel
+                                </Button>
                             </DialogClose>
 
-                            <Button type="submit" variant="destructive" :disabled="form.processing"> Delete account </Button>
+                            <Button type="submit" variant="destructive" :disabled="processing"> Delete account </Button>
                         </DialogFooter>
-                    </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
         </div>
