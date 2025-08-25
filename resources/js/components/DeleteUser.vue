@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { destroy } from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import { Form } from '@inertiajs/vue3';
 
 import HeadingSmall from '@/components/HeadingSmall.vue';
@@ -29,10 +30,8 @@ import {
                 </DialogTrigger>
                 <DialogContent>
                     <Form
-                        method="delete"
-                        :action="route('profile.destroy')"
+                        v-bind="destroy.form()"
                         reset-on-success
-                        @error="() => passwordInput?.focus()"
                         :options="{
                             preserveScroll: true,
                         }"

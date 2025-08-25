@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { update } from '@/actions/App/Http/Controllers/Settings/ProfileController';
+import { edit } from '@/routes/profile';
+import { Form, Head, usePage } from '@inertiajs/vue3';
+
 import DeleteUser from '@/components/DeleteUser.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
@@ -7,8 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
-import { type BreadcrumbItem, type User } from '@/types';
-import { Form, Head, usePage } from '@inertiajs/vue3';
+import { type BreadcrumbItem } from '@/types';
 
 interface Props {
     status?: string;
@@ -19,12 +22,12 @@ defineProps<Props>();
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Profile settings',
-        href: '/settings/profile',
+        href: edit().url,
     },
 ];
 
 const page = usePage();
-const user = page.props.auth.user as User;
+const user = page.props.auth.user;
 </script>
 
 <template>
@@ -35,7 +38,7 @@ const user = page.props.auth.user as User;
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Profile information" description="Update your name and email address" />
 
-                <Form method="patch" :action="route('profile.update')" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form v-bind="update.form()" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
                         <Input
