@@ -11,19 +11,33 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { channels, dashboard } from '@/routes';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
+const page = usePage();
+const isCustomer = computed(() => page.props.auth?.user?.role === 'customer');
+
+const mainNavItems = computed<NavItem[]>(() => [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
     },
-];
+    ...(isCustomer.value
+        ? [
+              {
+                  title: 'Channels',
+                  href: channels(),
+                  icon: LayoutGrid,
+              } as NavItem,
+          ]
+        : []),
+]);
 
 const footerNavItems: NavItem[] = [
     {
